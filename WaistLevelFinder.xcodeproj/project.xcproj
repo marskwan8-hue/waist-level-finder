@@ -1,0 +1,140 @@
+{
+  "default-configuration": "Debug",
+  "configurations": [
+    "Debug",
+    "Release",
+  ],
+  "localizations": {
+    "development": "en",
+    "supported": [
+      "Base",
+    ],
+  },
+  "files": [
+    {
+      "kind": "group",
+      "path": "WaistLevelFinder",
+      "children": [
+        {
+          "kind": "group",
+          "path": "App",
+          "children": [
+            { "path": "WaistLevelFinderApp.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "Settings.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+          ],
+        }, {
+          "kind": "group",
+          "path": "Camera",
+          "children": [
+            { "path": "CameraController.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "CaptureEngine.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "CameraPreview.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "PhotoLibrary.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+          ],
+        }, {
+          "kind": "group",
+          "path": "Viewfinder",
+          "children": [
+            { "path": "GroundGlassView.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "FocusingScreen.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+          ],
+        }, {
+          "kind": "group",
+          "path": "Screens",
+          "children": [
+            { "path": "RootView.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "FinderLayout.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "HoodPanel.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "Controls.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "SettingsSheet.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+          ],
+        }, {
+          "kind": "group",
+          "path": "Resources",
+          "children": [
+            { "path": "Assets.xcassets", "target-membership": [ "WaistLevelFinder/resources" ] },
+          ],
+        },
+      ],
+    }, {
+      "kind": "group",
+      "name": "Products",
+      "children": [
+        { "path": "<PRODUCTS>/WaistLevelFinder.app", "id": "CD882723D3A0763841270760", "type": "wrapper.application", "index": false },
+      ],
+    },
+    { "path": "README.md" },
+  ],
+  "targets": [
+    {
+      "name": "WaistLevelFinder",
+      "id": "3696B5B4231EF62234C28107",
+      "product": "Products/WaistLevelFinder.app",
+      "product-type": "application",
+      "legacy-provisioning-style": "automatic",
+      "build-phases": [
+        "compile-sources",
+        "resources",
+      ],
+      "build-settings": {
+        "ASSETCATALOG_COMPILER_APPICON_NAME": "AppIcon",
+        "ASSETCATALOG_COMPILER_GLOBAL_ACCENT_COLOR_NAME": "AccentColor",
+        "CODE_SIGN_IDENTITY": "iPhone Developer",
+        "CODE_SIGN_STYLE": "Automatic",
+        "ENABLE_PREVIEWS": "YES",
+        "GENERATE_INFOPLIST_FILE": "YES",
+        "INFOPLIST_KEY_CFBundleDisplayName": "腰平取景",
+        "INFOPLIST_KEY_NSCameraUsageDescription": "腰平取景器需要使用相机来显示取景画面。",
+        "INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription": "拍下的照片会保存到你的相册。",
+        "INFOPLIST_KEY_UIApplicationSceneManifest_Generation": "YES",
+        "INFOPLIST_KEY_UILaunchScreen_Generation": "YES",
+        "INFOPLIST_KEY_UIStatusBarHidden": "YES",
+        "INFOPLIST_KEY_UISupportedInterfaceOrientations": "UIInterfaceOrientationPortrait UIInterfaceOrientationLandscapeLeft UIInterfaceOrientationLandscapeRight UIInterfaceOrientationPortraitUpsideDown",
+        "LD_RUNPATH_SEARCH_PATHS": [
+          "$(inherited)",
+          "@executable_path/Frameworks",
+        ],
+        "PRODUCT_BUNDLE_IDENTIFIER": "com.marskwan.WaistLevelFinder",
+        "SDKROOT": "iphoneos",
+        "TARGETED_DEVICE_FAMILY": "1",
+      },
+    },
+  ],
+  "build-settings": {
+    "ALWAYS_SEARCH_USER_PATHS": "NO",
+    "CLANG_ANALYZER_NONNULL": "YES",
+    "CLANG_ENABLE_MODULES": "YES",
+    "CLANG_ENABLE_OBJC_ARC": "YES",
+    "CLANG_ENABLE_OBJC_WEAK": "YES",
+    "CLANG_WARN_UNGUARDED_AVAILABILITY": "YES_AGGRESSIVE",
+    "COPY_PHASE_STRIP": "NO",
+    "CURRENT_PROJECT_VERSION": "1",
+    "DEBUG_INFORMATION_FORMAT[config=Debug]": "dwarf",
+    "DEBUG_INFORMATION_FORMAT[config=Release]": "dwarf-with-dsym",
+    "ENABLE_NS_ASSERTIONS[config=Release]": "NO",
+    "ENABLE_STRICT_OBJC_MSGSEND": "YES",
+    "ENABLE_TESTABILITY[config=Debug]": "YES",
+    "ENABLE_USER_SCRIPT_SANDBOXING": "YES",
+    "GCC_C_LANGUAGE_STANDARD": "gnu11",
+    "GCC_OPTIMIZATION_LEVEL[config=Debug]": "0",
+    "GCC_PREPROCESSOR_DEFINITIONS[config=Debug]": [
+      "$(inherited)",
+      "DEBUG=1",
+    ],
+    "IPHONEOS_DEPLOYMENT_TARGET": "27.1",
+    "MARKETING_VERSION": "1.0",
+    "ONLY_ACTIVE_ARCH[config=Debug]": "YES",
+    "PRODUCT_NAME": "$(TARGET_NAME)",
+    "SDKROOT": "iphoneos",
+    "STRING_CATALOG_GENERATE_SYMBOLS": "YES",
+    "SWIFT_ACTIVE_COMPILATION_CONDITIONS[config=Debug]": "DEBUG",
+    "SWIFT_APPROACHABLE_CONCURRENCY": "YES",
+    "SWIFT_COMPILATION_MODE[config=Release]": "wholemodule",
+    "SWIFT_DEFAULT_ACTOR_ISOLATION": "MainActor",
+    "SWIFT_OPTIMIZATION_LEVEL[config=Debug]": "-Onone",
+    "SWIFT_OPTIMIZATION_LEVEL[config=Release]": "-O",
+    "SWIFT_VERSION": "6.0",
+  },
+  "products-group": null,
+  "last-upgrade": "27.1",
+}
