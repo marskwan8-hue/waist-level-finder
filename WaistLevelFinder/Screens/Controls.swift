@@ -35,40 +35,56 @@ private struct ShutterPressStyle: ButtonStyle {
     }
 }
 
-/// Loupe, focusing screen and settings.
+/// Loupe, focusing screen, exposure compensation and focal length, in a 2×2 grid.
 struct ToolButtons: View {
-    let isVertical: Bool
     @Binding var isLoupeOn: Bool
     @Binding var screen: FocusingScreen
-    /// Settings live on the hood in waist-level mode, so the button is optional here.
-    var onSettings: (() -> Void)?
+    @Binding var exposureBias: Double
+    @Binding var zoom: Double
 
     var body: some View {
-        let layout = isVertical ? AnyLayout(VStackLayout(spacing: 18)) : AnyLayout(HStackLayout(spacing: 18))
-        layout {
-            ToolButton(title: "放大镜", symbol: "plus.magnifyingglass", isOn: isLoupeOn) {
-                isLoupeOn.toggle()
+        Grid(horizontalSpacing: 16, verticalSpacing: 14) {
+            GridRow {
+                ToolButton(title: "放大镜", isOn: isLoupeOn) {
+                    isLoupeOn.toggle()
+                } icon: {
+                    Image(systemName: "plus.magnifyingglass")
+                }
+                ToolButton(title: screen.title, isOn: false) {
+                    screen = screen.next
+                } icon: {
+                    Image(systemName: screen.symbol)
+                }
             }
-            ToolButton(title: screen.title, symbol: screen.symbol, isOn: false) {
-                screen = screen.next
-            }
-            if let onSettings {
-                ToolButton(title: "设置", symbol: "gearshape", isOn: false, action: onSettings)
+            GridRow {
+                ToolButton(title: "曝光", isOn: exposureBias != 0) {
+                    let index = exposureBiasSteps.firstIndex(of: exposureBias) ?? 0
+                    exposureBias = exposureBiasSteps[(index + 1) % exposureBiasSteps.count]
+                } icon: {
+                    Text(formattedEV(exposureBias))
+                        .font(.system(size: 13, weight: .semibold).monospacedDigit())
+                }
+                ToolButton(title: zoom == 2 ? "≈48mm" : "≈24mm", isOn: false) {
+                    zoom = zoom == 2 ? 1 : 2
+                } icon: {
+                    Text(zoom == 2 ? "2×" : "1×")
+                        .font(.system(size: 15, weight: .semibold))
+                }
             }
         }
     }
 }
 
-private struct ToolButton: View {
+private struct ToolButton<Icon: View>: View {
     let title: String
-    let symbol: String
     let isOn: Bool
     let action: () -> Void
+    @ViewBuilder let icon: Icon
 
     var body: some View {
         Button(action: action) {
             VStack(spacing: 4) {
-                Image(systemName: symbol)
+                icon
                     .font(.title3)
                     .frame(width: 46, height: 46)
                     .background(Circle().fill(isOn ? Color.accentColor : Color(white: 0.16)))
@@ -76,6 +92,8 @@ private struct ToolButton: View {
                 Text(title)
                     .font(.caption2)
                     .foregroundStyle(.secondary)
+                    .lineLimit(1)
+                    .fixedSize()
             }
         }
         .buttonStyle(.plain)

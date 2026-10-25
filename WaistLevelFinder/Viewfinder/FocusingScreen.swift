@@ -2,13 +2,14 @@ import SwiftUI
 
 /// The interchangeable focusing screens of a medium-format waist-level camera.
 enum FocusingScreen: String, CaseIterable, Identifiable {
-    case plain, grid, splitImage
+    case plain, thirds, grid, splitImage
 
     var id: Self { self }
 
     var title: String {
         switch self {
         case .plain: "全磨砂"
+        case .thirds: "三分线"
         case .grid: "方格"
         case .splitImage: "裂像"
         }
@@ -17,6 +18,7 @@ enum FocusingScreen: String, CaseIterable, Identifiable {
     var symbol: String {
         switch self {
         case .plain: "square"
+        case .thirds: "squareshape.split.3x3"
         case .grid: "square.grid.4x3.fill"
         case .splitImage: "circle.circle"
         }
@@ -44,17 +46,19 @@ struct ScreenMarkings: View {
             case .plain:
                 break
 
-            case .grid:
+            case .thirds, .grid:
+                let divisions = screen == .thirds ? 3 : 4
                 var lines = Path()
-                for i in 1...3 {
-                    let x = size.width * CGFloat(i) / 4
-                    let y = size.height * CGFloat(i) / 4
+                for i in 1..<divisions {
+                    let x = size.width * CGFloat(i) / CGFloat(divisions)
+                    let y = size.height * CGFloat(i) / CGFloat(divisions)
                     lines.move(to: CGPoint(x: x, y: 0))
                     lines.addLine(to: CGPoint(x: x, y: size.height))
                     lines.move(to: CGPoint(x: 0, y: y))
                     lines.addLine(to: CGPoint(x: size.width, y: y))
                 }
                 context.stroke(lines, with: ink, lineWidth: 0.8)
+                guard screen == .grid else { break }
                 let r = side * 0.06
                 context.stroke(Path(ellipseIn: CGRect(x: center.x - r, y: center.y - r, width: 2 * r, height: 2 * r)),
                                with: ink, lineWidth: 0.8)

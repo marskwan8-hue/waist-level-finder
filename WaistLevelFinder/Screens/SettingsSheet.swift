@@ -5,6 +5,8 @@ struct SettingsSheet: View {
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
     @AppStorage(SettingsKey.rotationCorrection) private var rotationCorrection = 0
     @AppStorage(SettingsKey.exposureCount) private var exposureCount = 0
+    @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
+    @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -18,6 +20,15 @@ struct SettingsSheet: View {
                     }
                     .pickerStyle(.inline)
                     .labelsHidden()
+                }
+
+                Section {
+                    Toggle("哈苏风格色调", isOn: $appliesLook)
+                    Toggle("自然影调（少用多帧合成）", isOn: $prefersNaturalTone)
+                } header: {
+                    Text("色彩")
+                } footer: {
+                    Text("色调同时用在取景屏和照片上：偏冷的底色带一点自然暖意，高光压低、暗部提亮、对比和鲜艳度略降，蓝色更沉，绿色更淡。自然影调会尽量不用 Smart HDR 这类多帧合成，光影过渡更自然，但暗光下噪点会多一些。")
                 }
 
                 Section {

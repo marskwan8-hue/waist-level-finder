@@ -28,6 +28,7 @@
           "children": [
             { "path": "CameraController.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
             { "path": "CaptureEngine.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "HasselbladLook.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
             { "path": "CameraPreview.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
             { "path": "PhotoLibrary.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
           ],

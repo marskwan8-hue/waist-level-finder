@@ -8,13 +8,14 @@ struct GroundGlassView: View {
     let isLoupeOn: Bool
     let isBlackout: Bool
     let rotationAngle: CGFloat
+    let appliesLook: Bool
 
     @State private var focusMark: FocusMark?
 
     var body: some View {
         ZStack {
             ZStack {
-                CameraPreview(camera: camera, rotationAngle: rotationAngle, isRunning: camera.state == .running) { point in
+                CameraPreview(camera: camera, rotationAngle: rotationAngle, appliesLook: appliesLook) { point in
                     showFocusMark(at: point)
                 }
                 GroundGlassTexture()

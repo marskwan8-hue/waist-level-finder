@@ -22,10 +22,10 @@ struct FinderLayout {
     let tools: CGPoint
     let shutter: CGPoint
     let counter: CGPoint
-    /// Whether the tool buttons stack vertically (beside the screen) or sit in a row (below it).
-    let toolsAreVertical: Bool
+    /// The settings button, in handheld mode. In waist-level mode it's on the hood.
+    let settings: CGPoint?
 
-    private static let controlColumn: CGFloat = 112
+    private static let controlColumn: CGFloat = 150
     private static let margin: CGFloat = 16
 
     init(size: CGSize, fold: CGRect?) {
@@ -49,7 +49,7 @@ struct FinderLayout {
         tools = CGPoint(x: leftX, y: deck.midY)
         shutter = CGPoint(x: rightX, y: deck.midY + side * 0.12)
         counter = CGPoint(x: rightX, y: deck.midY - side * 0.28)
-        toolsAreVertical = true
+        settings = nil
     }
 
     private init(handheldIn size: CGSize, isBookPose: Bool) {
@@ -64,18 +64,18 @@ struct FinderLayout {
             tools = CGPoint(x: glass.minX / 2, y: glass.midY)
             shutter = CGPoint(x: rightX, y: glass.midY + side * 0.12)
             counter = CGPoint(x: rightX, y: glass.midY - side * 0.28)
-            toolsAreVertical = true
+            settings = CGPoint(x: size.width - 36, y: 32)
         } else {
-            let controlsHeight: CGFloat = 150
+            let controlsHeight: CGFloat = 170
             let side = max(min(size.width - 2 * Self.margin, size.height - controlsHeight - 2 * Self.margin), 0)
             let top = (size.height - controlsHeight - side) / 2
             let glass = CGRect(x: (size.width - side) / 2, y: top, width: side, height: side)
             let controlsY = glass.maxY + (size.height - glass.maxY) / 2
             self.glass = glass
             tools = CGPoint(x: size.width * 0.2, y: controlsY)
-            shutter = CGPoint(x: size.width * 0.5, y: controlsY)
-            counter = CGPoint(x: size.width * 0.8, y: controlsY)
-            toolsAreVertical = false
+            shutter = CGPoint(x: size.width * 0.54, y: controlsY)
+            counter = CGPoint(x: size.width * 0.84, y: controlsY)
+            settings = CGPoint(x: size.width - 36, y: 32)
         }
     }
 }

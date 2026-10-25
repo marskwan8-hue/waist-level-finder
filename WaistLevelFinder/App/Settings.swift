@@ -6,6 +6,18 @@ enum SettingsKey {
     static let saveMirrored = "saveMirrored"
     static let rotationCorrection = "rotationCorrection"
     static let exposureCount = "exposureCount"
+    static let appliesLook = "appliesLook"
+    static let prefersNaturalTone = "prefersNaturalTone"
+    static let zoom = "zoom"
+    static let exposureBias = "exposureBias"
+}
+
+/// Exposure compensation steps. The recipe pulls exposure down to deepen shadows.
+let exposureBiasSteps: [Double] = [0, -0.3, -0.7, -1, 0.3, 0.7]
+
+/// "−0.3", "+0.7", "±0".
+func formattedEV(_ ev: Double) -> String {
+    ev == 0 ? "±0" : (ev > 0 ? "+" : "−") + String(format: "%.1f", abs(ev))
 }
 
 /// A roll of 120 film in a 6×6 back gives 12 exposures.

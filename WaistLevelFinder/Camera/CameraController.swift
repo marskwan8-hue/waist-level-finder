@@ -13,7 +13,7 @@ final class CameraController {
     private(set) var previewAngle: CGFloat = 90
 
     let engine = CaptureEngine()
-    var session: AVCaptureSession { engine.session }
+    var frames: FrameBox { engine.frames }
 
     @ObservationIgnored private var rotationCoordinator: AVCaptureDevice.RotationCoordinator?
     @ObservationIgnored private var rotationObservation: NSKeyValueObservation?
@@ -35,8 +35,9 @@ final class CameraController {
         state = .idle
     }
 
-    /// Tracks device rotation for a preview layer. Call it whenever a preview layer is created.
-    func attach(previewLayer: AVCaptureVideoPreviewLayer) {
+    /// Tracks device rotation relative to the interface of the layer that shows the preview.
+    /// Call it whenever a preview view is created.
+    func attach(previewLayer: CALayer) {
         guard let device = AVCaptureDevice.default(.builtInWideAngleCamera, for: .video, position: .back) else { return }
         let coordinator = AVCaptureDevice.RotationCoordinator(device: device, previewLayer: previewLayer)
         rotationCoordinator = coordinator
@@ -52,9 +53,22 @@ final class CameraController {
         engine.focus(at: devicePoint)
     }
 
-    func capturePhoto(mirrored: Bool, rotationCorrection: Int) async throws -> Data {
+    func setZoom(_ factor: CGFloat) {
+        engine.setZoom(factor)
+    }
+
+    func setExposureBias(_ ev: Double) {
+        engine.setExposureBias(Float(ev))
+    }
+
+    func capturePhoto(mirrored: Bool, rotationCorrection: Int, appliesLook: Bool, prefersNaturalTone: Bool) async throws -> Data {
         let base = rotationCoordinator?.videoRotationAngleForHorizonLevelCapture ?? 90
-        let angle = normalizedDegrees(base + CGFloat(rotationCorrection))
-        return try await engine.capture(rotationAngle: angle, mirrored: mirrored)
+        let options = CaptureOptions(
+            rotationAngle: normalizedDegrees(base + CGFloat(rotationCorrection)),
+            mirrored: mirrored,
+            appliesLook: appliesLook,
+            prefersNaturalTone: prefersNaturalTone
+        )
+        return try await engine.capture(options)
     }
 }

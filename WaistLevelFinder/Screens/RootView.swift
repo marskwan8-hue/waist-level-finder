@@ -13,6 +13,10 @@ struct RootView: View {
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
     @AppStorage(SettingsKey.rotationCorrection) private var rotationCorrection = 0
     @AppStorage(SettingsKey.exposureCount) private var exposureCount = 0
+    @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
+    @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
+    @AppStorage(SettingsKey.zoom) private var zoom = 2.0
+    @AppStorage(SettingsKey.exposureBias) private var exposureBias = 0.0
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -35,18 +39,22 @@ struct RootView: View {
                     screen: screen,
                     isLoupeOn: isLoupeOn,
                     isBlackout: isBlackout,
-                    rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection))
+                    rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection)),
+                    appliesLook: appliesLook
                 )
                 .frame(width: layout.glass.width, height: layout.glass.height)
                 .position(x: layout.glass.midX, y: layout.glass.midY)
 
-                ToolButtons(
-                    isVertical: layout.toolsAreVertical,
-                    isLoupeOn: $isLoupeOn,
-                    screen: $screen,
-                    onSettings: layout.hood == nil ? { isShowingSettings = true } : nil
-                )
-                .position(layout.tools)
+                ToolButtons(isLoupeOn: $isLoupeOn, screen: $screen, exposureBias: $exposureBias, zoom: $zoom)
+                    .position(layout.tools)
+
+                if let settings = layout.settings {
+                    Button("设置", systemImage: "gearshape") { isShowingSettings = true }
+                        .labelStyle(.iconOnly)
+                        .font(.title3)
+                        .foregroundStyle(.white)
+                        .position(settings)
+                }
 
                 ExposureCounter(exposureCount: exposureCount)
                     .position(layout.counter)
@@ -81,6 +89,11 @@ struct RootView: View {
         .task {
             await camera.start()
         }
+        .onChange(of: camera.state) { _, state in
+            if state == .running { applyCameraSettings() }
+        }
+        .onChange(of: zoom) { applyCameraSettings() }
+        .onChange(of: exposureBias) { applyCameraSettings() }
         .onChange(of: scenePhase) { _, phase in
             switch phase {
             case .active:
@@ -96,6 +109,11 @@ struct RootView: View {
         }
     }
 
+    private func applyCameraSettings() {
+        camera.setZoom(zoom)
+        camera.setExposureBias(exposureBias)
+    }
+
     private func shoot() {
         guard !isCapturing else { return }
         isCapturing = true
@@ -107,7 +125,12 @@ struct RootView: View {
             withAnimation(.easeOut(duration: 0.3)) { isBlackout = false }
 
             do {
-                let jpeg = try await camera.capturePhoto(mirrored: saveMirrored, rotationCorrection: rotationCorrection)
+                let jpeg = try await camera.capturePhoto(
+                    mirrored: saveMirrored,
+                    rotationCorrection: rotationCorrection,
+                    appliesLook: appliesLook,
+                    prefersNaturalTone: prefersNaturalTone
+                )
                 try await PhotoLibrary.save(jpeg)
                 exposureCount += 1
                 if exposureCount % exposuresPerRoll == 0 {
