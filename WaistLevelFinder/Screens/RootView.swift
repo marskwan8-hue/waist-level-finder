@@ -8,6 +8,8 @@ struct RootView: View {
     @State private var isCapturing = false
     @State private var isShowingSettings = false
     @State private var toast: String?
+    /// Mirrors `isFlipped` from the layout, for taking photos.
+    @State private var isLayoutFlipped = false
 
     @AppStorage(SettingsKey.focusingScreen) private var screen = FocusingScreen.grid
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
@@ -74,6 +76,20 @@ struct RootView: View {
                         .padding(.top, 8)
                 }
 
+                if isShowingSettings {
+                    // Drawn inside the app rather than as a system sheet, so it turns with the screen.
+                    ZStack {
+                        Color.black.opacity(0.5)
+                            .onTapGesture { isShowingSettings = false }
+                        SettingsSheet { isShowingSettings = false }
+                            .frame(maxWidth: 560)
+                            .clipShape(.rect(cornerRadius: 20))
+                            .padding(16)
+                    }
+                    .frame(width: proxy.size.width, height: proxy.size.height)
+                    .transition(.opacity)
+                }
+
                 if let toast {
                     Text(toast)
                         .font(.callout)
@@ -85,8 +101,12 @@ struct RootView: View {
                 }
             }
             .animation(.smooth, value: layout.mode)
+            .animation(.smooth, value: isShowingSettings)
             .frame(width: proxy.size.width, height: proxy.size.height)
             .rotationEffect(.degrees(isFlipped ? 180 : 0))
+            .onChange(of: isFlipped, initial: true) { _, flipped in
+                isLayoutFlipped = flipped
+            }
         }
         .background(Color(white: 0.07).ignoresSafeArea())
         .sensoryFeedback(.impact(weight: .heavy), trigger: exposureCount)
@@ -96,6 +116,9 @@ struct RootView: View {
         }
         .task {
             await camera.start()
+            // Ask now, while the phone is most likely still flat: the system alert doesn't turn
+            // with the flipped waist-level screen.
+            await PhotoLibrary.requestAccess()
         }
         .onChange(of: camera.state) { _, state in
             if state == .running { applyCameraSettings() }
@@ -111,9 +134,6 @@ struct RootView: View {
             default:
                 break
             }
-        }
-        .sheet(isPresented: $isShowingSettings) {
-            SettingsSheet()
         }
     }
 
@@ -140,7 +160,8 @@ struct RootView: View {
             do {
                 let jpeg = try await camera.capturePhoto(
                     mirrored: saveMirrored,
-                    rotationCorrection: rotationCorrection,
+                    // The system's capture angle is upside down along with the interface.
+                    rotationCorrection: rotationCorrection + (isLayoutFlipped ? 180 : 0),
                     appliesLook: appliesLook,
                     prefersNaturalTone: prefersNaturalTone
                 )

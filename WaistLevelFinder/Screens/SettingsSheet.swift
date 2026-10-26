@@ -8,7 +8,7 @@ struct SettingsSheet: View {
     @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
     @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
     @AppStorage(SettingsKey.flipsWaistLevel) private var flipsWaistLevel = true
-    @Environment(\.dismiss) private var dismiss
+    let onDone: () -> Void
 
     var body: some View {
         NavigationStack {
@@ -73,7 +73,7 @@ struct SettingsSheet: View {
             .navigationBarTitleDisplayMode(.inline)
             .toolbar {
                 ToolbarItem(placement: .confirmationAction) {
-                    Button("完成") { dismiss() }
+                    Button("完成", action: onDone)
                 }
             }
         }

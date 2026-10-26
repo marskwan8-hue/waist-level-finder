@@ -7,6 +7,10 @@ enum PhotoLibrary {
         var errorDescription: String? { "没有相册写入权限，请在“设置”里打开" }
     }
 
+    static func requestAccess() async {
+        _ = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
+    }
+
     static func save(_ jpeg: Data) async throws {
         let status = await PHPhotoLibrary.requestAuthorization(for: .addOnly)
         guard status == .authorized || status == .limited else { throw SaveError.denied }
