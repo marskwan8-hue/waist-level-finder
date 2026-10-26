@@ -8,8 +8,6 @@ struct RootView: View {
     @State private var isCapturing = false
     @State private var isShowingSettings = false
     @State private var toast: String?
-    /// Mirrors `isFlipped` from the layout, for taking photos.
-    @State private var isLayoutFlipped = false
 
     @AppStorage(SettingsKey.focusingScreen) private var screen = FocusingScreen.grid
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
@@ -28,11 +26,8 @@ struct RootView: View {
             // 👇 The fold is a division region, active only while the device is partially folded.
             // A horizontal fold means the tabletop pose: our waist-level pose.
             let fold = proxy.reservedRegions(kind: .division).first?.frame
-            // In this pose the iPhone Duo picks the landscape orientation with the camera half at
-            // the bottom, so everything reads upside down. Lay out for the opposite orientation
-            // and turn the whole screen around.
-            let isFlipped = flipsWaistLevel && fold.map { $0.width > $0.height } == true
-            let layout = FinderLayout(size: proxy.size, fold: isFlipped ? fold.map { rotatedHalfTurn($0, in: proxy.size) } : fold)
+            let layout = FinderLayout(size: proxy.size, fold: fold)
+            let locksOrientation = flipsWaistLevel && layout.mode == .waistLevel
 
             ZStack(alignment: .topLeading) {
                 if let hood = layout.hood {
@@ -47,8 +42,7 @@ struct RootView: View {
                     screen: screen,
                     isLoupeOn: isLoupeOn,
                     isBlackout: isBlackout,
-                    // Like the capture angle, the system's preview angle doesn't know about the flip.
-                    rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection) + (isFlipped ? 180 : 0)),
+                    rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection)),
                     appliesLook: appliesLook
                 )
                 .frame(width: layout.glass.width, height: layout.glass.height)
@@ -78,7 +72,6 @@ struct RootView: View {
                 }
 
                 if isShowingSettings {
-                    // Drawn inside the app rather than as a system sheet, so it turns with the screen.
                     ZStack {
                         Color.black.opacity(0.5)
                             .onTapGesture { isShowingSettings = false }
@@ -103,10 +96,12 @@ struct RootView: View {
             }
             .animation(.smooth, value: layout.mode)
             .animation(.smooth, value: isShowingSettings)
-            .frame(width: proxy.size.width, height: proxy.size.height)
-            .rotationEffect(.degrees(isFlipped ? 180 : 0))
-            .onChange(of: isFlipped, initial: true) { _, flipped in
-                isLayoutFlipped = flipped
+            .onChange(of: locksOrientation, initial: true) { _, locks in
+                if locks {
+                    OrientationLock.enterWaistLevel()
+                } else {
+                    OrientationLock.leaveWaistLevel()
+                }
             }
         }
         .background(Color(white: 0.07).ignoresSafeArea())
@@ -117,8 +112,7 @@ struct RootView: View {
         }
         .task {
             await camera.start()
-            // Ask now, while the phone is most likely still flat: the system alert doesn't turn
-            // with the flipped waist-level screen.
+            // Ask up front rather than on the first shot, so the alert doesn't interrupt framing.
             await PhotoLibrary.requestAccess()
         }
         .onChange(of: camera.state) { _, state in
@@ -136,11 +130,6 @@ struct RootView: View {
                 break
             }
         }
-    }
-
-    /// Where `rect` ends up when a canvas of `size` turns 180° about its centre.
-    private func rotatedHalfTurn(_ rect: CGRect, in size: CGSize) -> CGRect {
-        CGRect(x: size.width - rect.maxX, y: size.height - rect.maxY, width: rect.width, height: rect.height)
     }
 
     private func applyCameraSettings() {
@@ -161,8 +150,7 @@ struct RootView: View {
             do {
                 let jpeg = try await camera.capturePhoto(
                     mirrored: saveMirrored,
-                    // The system's capture angle is upside down along with the interface.
-                    rotationCorrection: rotationCorrection + (isLayoutFlipped ? 180 : 0),
+                    rotationCorrection: rotationCorrection,
                     appliesLook: appliesLook,
                     prefersNaturalTone: prefersNaturalTone
                 )

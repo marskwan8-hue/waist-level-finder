@@ -39,9 +39,9 @@ struct SettingsSheet: View {
                 }
 
                 Section {
-                    Toggle("腰平模式翻转 180°", isOn: $flipsWaistLevel)
+                    Toggle("腰平模式自动转正", isOn: $flipsWaistLevel)
                 } footer: {
-                    Text("半折时 iPhone Duo 会把界面上下颠倒，打开后自动转正。如果半折后取景屏出现在竖起来的那半屏，或者内容是倒的，就切换这个开关。")
+                    Text("半折时 iPhone Duo 会把界面上下颠倒，打开后会让系统换到另一个横屏方向，屏幕、上滑回主屏幕的手势和系统弹窗都会转正。如果半折后取景屏出现在竖起来的那半屏，就切换这个开关，再重新折一次。")
                 }
 
                 Section {
