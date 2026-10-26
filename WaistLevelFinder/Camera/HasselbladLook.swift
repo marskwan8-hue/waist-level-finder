@@ -153,8 +153,9 @@ nonisolated struct MonotoneCurve {
     private let tangents: [Double]
 
     init(points: [(Double, Double)]) {
-        xs = points.map(\.0)
-        ys = points.map(\.1)
+        // Work on locals: closures can't capture `self` before every property is set.
+        let xs = points.map(\.0)
+        let ys = points.map(\.1)
         let n = points.count
         let slopes = (0..<n - 1).map { (ys[$0 + 1] - ys[$0]) / (xs[$0 + 1] - xs[$0]) }
         var m = [Double](repeating: 0, count: n)
@@ -172,6 +173,8 @@ nonisolated struct MonotoneCurve {
                 m[i + 1] = k * b * slopes[i]
             }
         }
+        self.xs = xs
+        self.ys = ys
         tangents = m
     }
 
