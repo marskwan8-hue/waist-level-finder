@@ -4,6 +4,7 @@ import SwiftUI
 struct HoodPanel: View {
     let hinge: DeviceHinge?
     let onSettings: () -> Void
+    @Environment(\.language) private var language
 
     private var angle: Double? { hinge?.angle.degrees }
     private var isGoodAngle: Bool {
@@ -22,10 +23,10 @@ struct HoodPanel: View {
                             .font(.callout.monospacedDigit())
                             .foregroundStyle(isGoodAngle ? .green : .orange)
                             .contentTransition(.numericText(value: angle))
-                            .accessibilityLabel("折叠角度 \(Int(angle.rounded())) 度")
+                            .accessibilityLabel(language.pick("折叠角度 \(Int(angle.rounded())) 度", "Fold angle \(Int(angle.rounded())) degrees"))
                     }
                     Spacer()
-                    Button("设置", systemImage: "gearshape", action: onSettings)
+                    Button(language.pick("设置", "Settings"), systemImage: "gearshape", action: onSettings)
                         .labelStyle(.iconOnly)
                         .font(.title3)
                         .foregroundStyle(.white)

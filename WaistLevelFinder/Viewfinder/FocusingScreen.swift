@@ -6,12 +6,12 @@ enum FocusingScreen: String, CaseIterable, Identifiable {
 
     var id: Self { self }
 
-    var title: String {
+    func title(in language: Language) -> String {
         switch self {
-        case .plain: "全磨砂"
-        case .thirds: "三分线"
-        case .grid: "方格"
-        case .splitImage: "裂像"
+        case .plain: language.pick("全磨砂", "Matte")
+        case .thirds: language.pick("三分线", "Thirds")
+        case .grid: language.pick("方格", "Grid")
+        case .splitImage: language.pick("裂像", "Split")
         }
     }
 

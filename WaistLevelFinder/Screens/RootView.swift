@@ -21,6 +21,7 @@ struct RootView: View {
     @AppStorage(SettingsKey.mirrorsViewfinder) private var mirrorsViewfinder = false
 
     @Environment(\.scenePhase) private var scenePhase
+    @Environment(\.language) private var language
 
     var body: some View {
         GeometryReader { proxy in
@@ -54,7 +55,7 @@ struct RootView: View {
                     .position(layout.tools)
 
                 if let settings = layout.settings {
-                    Button("设置", systemImage: "gearshape") { isShowingSettings = true }
+                    Button(language.pick("设置", "Settings"), systemImage: "gearshape") { isShowingSettings = true }
                         .labelStyle(.iconOnly)
                         .font(.title3)
                         .foregroundStyle(.white)
@@ -159,7 +160,7 @@ struct RootView: View {
                 try await PhotoLibrary.save(jpeg)
                 exposureCount += 1
                 if exposureCount % exposuresPerRoll == 0 {
-                    showToast("一卷拍完了，换新卷继续")
+                    showToast(language.pick("一卷拍完了，换新卷继续", "That's the roll. Load a new one."))
                 }
             } catch {
                 showToast(error.localizedDescription)
@@ -181,15 +182,18 @@ struct RootView: View {
 /// Tells you how to get into the waist-level pose.
 private struct PoseHint: View {
     let isBookPose: Bool
+    @Environment(\.language) private var language
 
     var body: some View {
         VStack(spacing: 2) {
             Label(
-                isBookPose ? "横过来，让摄像头那一半竖起来" : "半折到 90° 左右，进入腰平模式",
+                isBookPose
+                    ? language.pick("横过来，让摄像头那一半竖起来", "Turn sideways with the camera half standing up")
+                    : language.pick("半折到 90° 左右，进入腰平模式", "Fold to about 90° for waist-level mode"),
                 systemImage: isBookPose ? "rotate.right" : "laptopcomputer"
             )
             // The app turns the interface itself in the waist-level pose; the lock stops it.
-            Text("请先在控制中心关闭竖排方向锁定")
+            Text(language.pick("请先在控制中心关闭竖排方向锁定", "Turn off Orientation Lock in Control Center first"))
                 .font(.caption2)
         }
         .font(.footnote)

@@ -91,15 +91,16 @@ private struct FocusMarkView: View {
 private struct CameraUnavailableView: View {
     let state: CameraController.State
     @Environment(\.openURL) private var openURL
+    @Environment(\.language) private var language
 
     var body: some View {
         VStack(spacing: 12) {
             Image(systemName: "camera.slash")
                 .font(.largeTitle)
-            Text(state == .denied ? "需要相机权限" : "相机不可用")
+            Text(state == .denied ? language.pick("需要相机权限", "Camera access needed") : language.pick("相机不可用", "Camera unavailable"))
                 .font(.headline)
             if state == .denied {
-                Button("打开设置") {
+                Button(language.pick("打开设置", "Open Settings")) {
                     if let url = URL(string: UIApplication.openSettingsURLString) {
                         openURL(url)
                     }

@@ -7,8 +7,8 @@ enum CaptureError: LocalizedError {
 
     var errorDescription: String? {
         switch self {
-        case .unavailable: "相机不可用"
-        case .noImageData: "没有拿到照片数据"
+        case .unavailable: Language.current.pick("相机不可用", "The camera isn't available")
+        case .noImageData: Language.current.pick("没有拿到照片数据", "The photo couldn't be read")
         }
     }
 }

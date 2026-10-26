@@ -4,7 +4,9 @@ enum PhotoLibrary {
     enum SaveError: LocalizedError {
         case denied
 
-        var errorDescription: String? { "没有相册写入权限，请在“设置”里打开" }
+        var errorDescription: String? {
+            Language.current.pick("没有相册写入权限，请在“设置”里打开", "No access to Photos. Allow it in Settings.")
+        }
     }
 
     static func requestAccess() async {

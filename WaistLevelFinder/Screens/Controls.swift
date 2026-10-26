@@ -4,6 +4,7 @@ import SwiftUI
 struct ShutterButton: View {
     let isEnabled: Bool
     let action: () -> Void
+    @Environment(\.language) private var language
 
     var body: some View {
         Button(action: action) {
@@ -23,7 +24,7 @@ struct ShutterButton: View {
         .buttonStyle(ShutterPressStyle())
         .disabled(!isEnabled)
         .opacity(isEnabled ? 1 : 0.4)
-        .accessibilityLabel("快门")
+        .accessibilityLabel(language.pick("快门", "Shutter"))
     }
 }
 
@@ -41,23 +42,24 @@ struct ToolButtons: View {
     @Binding var screen: FocusingScreen
     @Binding var exposureBias: Double
     @Binding var zoom: Double
+    @Environment(\.language) private var language
 
     var body: some View {
         Grid(horizontalSpacing: 16, verticalSpacing: 14) {
             GridRow {
-                ToolButton(title: "放大镜", isOn: isLoupeOn) {
+                ToolButton(title: language.pick("放大镜", "Loupe"), isOn: isLoupeOn) {
                     isLoupeOn.toggle()
                 } icon: {
                     Image(systemName: "plus.magnifyingglass")
                 }
-                ToolButton(title: screen.title, isOn: false) {
+                ToolButton(title: screen.title(in: language), isOn: false) {
                     screen = screen.next
                 } icon: {
                     Image(systemName: screen.symbol)
                 }
             }
             GridRow {
-                ToolButton(title: "曝光", isOn: exposureBias != 0) {
+                ToolButton(title: language.pick("曝光", "Exposure"), isOn: exposureBias != 0) {
                     let index = exposureBiasSteps.firstIndex(of: exposureBias) ?? 0
                     exposureBias = exposureBiasSteps[(index + 1) % exposureBiasSteps.count]
                 } icon: {
@@ -103,6 +105,7 @@ private struct ToolButton<Icon: View>: View {
 /// The exposure counter window of a 12-exposure film back.
 struct ExposureCounter: View {
     let exposureCount: Int
+    @Environment(\.language) private var language
 
     var body: some View {
         VStack(spacing: 2) {
@@ -119,6 +122,9 @@ struct ExposureCounter: View {
         }
         .animation(.snappy, value: exposureCount)
         .accessibilityElement(children: .ignore)
-        .accessibilityLabel("第 \(exposureCount % exposuresPerRoll + 1) 张，共 \(exposuresPerRoll) 张")
+        .accessibilityLabel(language.pick(
+            "第 \(exposureCount % exposuresPerRoll + 1) 张，共 \(exposuresPerRoll) 张",
+            "Frame \(exposureCount % exposuresPerRoll + 1) of \(exposuresPerRoll)"
+        ))
     }
 }

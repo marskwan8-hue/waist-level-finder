@@ -1,7 +1,7 @@
 import Foundation
 
 /// `UserDefaults` keys shared by every `@AppStorage` in the app.
-enum SettingsKey {
+nonisolated enum SettingsKey {
     static let focusingScreen = "focusingScreen"
     static let saveMirrored = "saveMirrored"
     static let rotationCorrection = "rotationCorrection"
@@ -12,6 +12,7 @@ enum SettingsKey {
     static let exposureBias = "exposureBias"
     static let flipsWaistLevel = "flipsWaistLevel"
     static let mirrorsViewfinder = "mirrorsViewfinder"
+    static let language = "language"
 }
 
 /// Exposure compensation steps. The recipe pulls exposure down to deepen shadows.
