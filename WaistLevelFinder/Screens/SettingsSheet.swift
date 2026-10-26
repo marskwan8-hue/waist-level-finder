@@ -35,7 +35,7 @@ struct SettingsSheet: View {
                 }
 
                 Section {
-                    Toggle(l.pick("哈苏风格色调", "Hasselblad-Style Color"), isOn: $appliesLook)
+                    Toggle(l.pick("经典冷调", "Classic Cool"), isOn: $appliesLook)
                     Toggle(l.pick("自然影调（少用多帧合成）", "Natural Tones (Less Multi-Frame Fusion)"), isOn: $prefersNaturalTone)
                 } header: {
                     Text(l.pick("色彩", "Color"))

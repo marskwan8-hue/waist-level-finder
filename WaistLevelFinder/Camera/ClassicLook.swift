@@ -1,7 +1,7 @@
 import CoreImage
 import Foundation
 
-/// A Hasselblad-like colour grade, baked into one 3D LUT so it's cheap enough
+/// A cool, soft medium-format colour grade, baked into one 3D LUT so it's cheap enough
 /// for the live viewfinder and identical on the saved photo.
 ///
 /// Based on a community recipe for iPhone:
@@ -13,7 +13,7 @@ import Foundation
 ///
 /// The Photos sliders have no published formulas, so the numbers below are
 /// approximations of how far each slider moves the image.
-nonisolated enum HasselbladLook {
+nonisolated enum ClassicLook {
     static let cubeDimension = 33
     static let cubeData: Data = makeCube()
 

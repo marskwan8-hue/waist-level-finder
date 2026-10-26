@@ -97,7 +97,7 @@ nonisolated final class CaptureEngine: @unchecked Sendable {
         }
     }
 
-    /// 2× on the main camera is about 48 mm, close to the classic Hasselblad perspective.
+    /// 2× on the main camera is about 48 mm, close to a medium-format standard lens.
     func setZoom(_ factor: CGFloat) {
         configureDevice { device in
             device.videoZoomFactor = min(max(factor, device.minAvailableVideoZoomFactor), device.maxAvailableVideoZoomFactor)
@@ -161,7 +161,7 @@ nonisolated final class CaptureEngine: @unchecked Sendable {
             image = image.transformed(by: CGAffineTransform(scaleX: -1, y: 1).translatedBy(x: -side, y: 0))
         }
         if options.appliesLook {
-            image = HasselbladLook.sharpen(HasselbladLook.apply(to: image))
+            image = ClassicLook.sharpen(ClassicLook.apply(to: image))
         }
         // The orientation is already applied; drop it so it isn't applied twice.
         image = image.settingProperties([:])

@@ -11,9 +11,9 @@
   - 下半屏（平放）：只有正方形取景屏和旁边的快门；其他按钮在上半屏。
 - **取景屏质感**：正方形裁切、磨砂颗粒、菲涅尔环、中心亮斑和暗角。设置里可以打开“镜像取景”，像真正的腰平取景器那样左右相反（默认关闭）。
 - **自动转正**：半折时 iPhone Duo 选的横屏方向是反的，app 会让系统换到另一个横屏方向。使用前需要在控制中心关闭竖排方向锁定。
-- **哈苏风格色调**：取景屏实时预览和存下来的照片使用同一套调色，具体见下面“色调”一节。
+- **经典冷调**：取景屏实时预览和存下来的照片使用同一套调色，具体见下面“色调”一节。
 - **可换对焦屏**：全磨砂、三分线、方格、裂像（裂像只是刻线样式，不能真正用来对焦）。
-- **2× 焦距（约 48mm）**：接近哈苏 80mm 标准镜头在 6×6 上的视角，可切回 1×。
+- **2× 焦距（约 48mm）**：接近 6×6 中画幅 80mm 标准镜头的视角，可切回 1×。
 - **曝光补偿**：在 ±0、−0.3、−0.7、−1.0、+0.3、+0.7 之间循环。按 recipe 的建议，压低曝光可以让阴影更深，同时保住高光。
 - **放大镜**：模拟弹出式放大镜，把画面中心放大 2.6 倍，方便精确对焦。
 - **点按对焦和测光**。
@@ -22,7 +22,9 @@
 
 ## 色调
 
-参考 r/iPhone17Pro 上一份把 iPhone 照片调成哈苏风格的 recipe，所有调整合成一张 33³ 的 3D LUT（`Camera/HasselbladLook.swift`）：
+参考 r/iPhone17Pro 上一份 iPhone 调色 recipe，所有调整合成一张 33³ 的 3D LUT（`Camera/ClassicLook.swift`）：
+
+界面上叫“经典冷调 / Classic Cool”，不使用相机品牌名称：品牌名是注册商标，未经授权使用不能通过 App 审核。
 
 | recipe 中的项目 | app 里的做法 |
 | --- | --- |
@@ -38,7 +40,7 @@
 | 48mm 焦距 | 默认 2× |
 | 3×3 网格 | “三分线”对焦屏 |
 
-Photos 里各个滑杆的算法没有公开，上面的数值都是近似值，可以在 `HasselbladLook` 里继续微调。ProRAW 暂时没有做：DNG 套不上这套色调。
+Photos 里各个滑杆的算法没有公开，上面的数值都是近似值，可以在 `ClassicLook` 里继续微调。ProRAW 暂时没有做：DNG 套不上这套色调。
 
 ## 运行
 
@@ -47,6 +49,20 @@ Photos 里各个滑杆的算法没有公开，上面的数值都是近似值，�
 1. 用 Xcode 打开 `WaistLevelFinder.xcodeproj`。
 2. 选中 WaistLevelFinder target，在 **Signing & Capabilities** 里选择你的 Team。如果提示 Bundle Identifier 冲突，把 `com.marskwan.WaistLevelFinder` 改成你自己的。
 3. 连上 iPhone Duo，Run。
+
+## TestFlight 测试
+
+需要加入付费的 Apple Developer Program。
+
+1. 在 [App Store Connect](https://appstoreconnect.apple.com) → App → “+” 新建 App，平台选 iOS，Bundle ID 选这个项目用的那个。
+2. Xcode 里 Team 换成付费的开发者团队，顶部运行目标选 **Any iOS Device (arm64)**。
+3. **Product → Archive**，完成后在 Organizer 里点 **Distribute App → TestFlight & App Store**（或 TestFlight Internal Only），按提示上传。
+4. 上传后等几分钟处理完成，在 App Store Connect 的 TestFlight 页面：
+   - **内部测试**：把团队成员加进去，不用审核，马上可以装；
+   - **外部测试**：最多 1 万人，第一次要经过 Beta 审核，可能需要填隐私政策网址，可以用 [`PRIVACY.md`](PRIVACY.md) 的 GitHub 链接。
+5. 测试者在 iPhone 上装 **TestFlight** App，接受邀请后安装。每个构建版本 90 天后过期。
+
+每次更新：把 Build 号加 1（General → Build），再 Archive 上传一次。
 
 ## 代码结构
 

@@ -81,7 +81,7 @@ final class PreviewView: MTKView {
             y: -(image.extent.height - target.height) / 2
         ))
         if appliesLook {
-            image = HasselbladLook.apply(to: image)
+            image = ClassicLook.apply(to: image)
         }
 
         ciContext.render(image, to: drawable.texture, commandBuffer: commandBuffer,

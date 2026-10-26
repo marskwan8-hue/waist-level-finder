@@ -121,7 +121,7 @@ struct RootView: View {
         }
         .task {
             // Build the colour cube off the main thread before the first frame needs it.
-            Task.detached(priority: .userInitiated) { _ = HasselbladLook.cubeData }
+            Task.detached(priority: .userInitiated) { _ = ClassicLook.cubeData }
             Task {
                 try? await Task.sleep(for: .milliseconds(700))
                 withAnimation(.easeIn(duration: 0.25)) { hasSettled = true }

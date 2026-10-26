@@ -8,6 +8,7 @@
     "development": "en",
     "supported": [
       "Base",
+      "zh-Hans",
     ],
   },
   "files": [
@@ -30,7 +31,7 @@
           "children": [
             { "path": "CameraController.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
             { "path": "CaptureEngine.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
-            { "path": "HasselbladLook.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
+            { "path": "ClassicLook.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
             { "path": "CameraPreview.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
             { "path": "PhotoLibrary.swift", "target-membership": [ "WaistLevelFinder/compile-sources" ] },
           ],
@@ -56,6 +57,7 @@
           "path": "Resources",
           "children": [
             { "path": "Assets.xcassets", "target-membership": [ "WaistLevelFinder/resources" ] },
+            { "path": "InfoPlist.xcstrings", "target-membership": [ "WaistLevelFinder/resources" ] },
           ],
         },
       ],
@@ -87,8 +89,8 @@
         "ENABLE_PREVIEWS": "YES",
         "GENERATE_INFOPLIST_FILE": "YES",
         "INFOPLIST_KEY_CFBundleDisplayName": "Viewfinder",
-        "INFOPLIST_KEY_NSCameraUsageDescription": "腰平取景器需要使用相机来显示取景画面。The viewfinder uses the camera to show the scene.",
-        "INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription": "拍下的照片会保存到你的相册。Your photos are saved to your library.",
+        "INFOPLIST_KEY_NSCameraUsageDescription": "The viewfinder uses the camera to show the scene and take photos.",
+        "INFOPLIST_KEY_NSPhotoLibraryAddUsageDescription": "Your photos are saved to your photo library.",
         "INFOPLIST_KEY_UIApplicationSceneManifest_Generation": "YES",
         "INFOPLIST_KEY_UILaunchScreen_Generation": "YES",
         "INFOPLIST_KEY_UIStatusBarHidden": "YES",
