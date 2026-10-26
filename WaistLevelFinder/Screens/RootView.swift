@@ -47,7 +47,8 @@ struct RootView: View {
                     screen: screen,
                     isLoupeOn: isLoupeOn,
                     isBlackout: isBlackout,
-                    rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection)),
+                    // Like the capture angle, the system's preview angle doesn't know about the flip.
+                    rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection) + (isFlipped ? 180 : 0)),
                     appliesLook: appliesLook
                 )
                 .frame(width: layout.glass.width, height: layout.glass.height)
