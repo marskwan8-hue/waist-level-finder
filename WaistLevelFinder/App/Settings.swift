@@ -10,6 +10,7 @@ enum SettingsKey {
     static let prefersNaturalTone = "prefersNaturalTone"
     static let zoom = "zoom"
     static let exposureBias = "exposureBias"
+    static let flipsWaistLevel = "flipsWaistLevel"
 }
 
 /// Exposure compensation steps. The recipe pulls exposure down to deepen shadows.

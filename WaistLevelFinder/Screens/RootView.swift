@@ -17,6 +17,7 @@ struct RootView: View {
     @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
     @AppStorage(SettingsKey.zoom) private var zoom = 2.0
     @AppStorage(SettingsKey.exposureBias) private var exposureBias = 0.0
+    @AppStorage(SettingsKey.flipsWaistLevel) private var flipsWaistLevel = true
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -24,7 +25,12 @@ struct RootView: View {
         GeometryReader { proxy in
             // 👇 The fold is a division region, active only while the device is partially folded.
             // A horizontal fold means the tabletop pose: our waist-level pose.
-            let layout = FinderLayout(size: proxy.size, fold: proxy.reservedRegions(kind: .division).first?.frame)
+            let fold = proxy.reservedRegions(kind: .division).first?.frame
+            // In this pose the iPhone Duo picks the landscape orientation with the camera half at
+            // the bottom, so everything reads upside down. Lay out for the opposite orientation
+            // and turn the whole screen around.
+            let isFlipped = flipsWaistLevel && fold.map { $0.width > $0.height } == true
+            let layout = FinderLayout(size: proxy.size, fold: isFlipped ? fold.map { rotatedHalfTurn($0, in: proxy.size) } : fold)
 
             ZStack(alignment: .topLeading) {
                 if let hood = layout.hood {
@@ -79,6 +85,8 @@ struct RootView: View {
                 }
             }
             .animation(.smooth, value: layout.mode)
+            .frame(width: proxy.size.width, height: proxy.size.height)
+            .rotationEffect(.degrees(isFlipped ? 180 : 0))
         }
         .background(Color(white: 0.07).ignoresSafeArea())
         .sensoryFeedback(.impact(weight: .heavy), trigger: exposureCount)
@@ -107,6 +115,11 @@ struct RootView: View {
         .sheet(isPresented: $isShowingSettings) {
             SettingsSheet()
         }
+    }
+
+    /// Where `rect` ends up when a canvas of `size` turns 180° about its centre.
+    private func rotatedHalfTurn(_ rect: CGRect, in size: CGSize) -> CGRect {
+        CGRect(x: size.width - rect.maxX, y: size.height - rect.maxY, width: rect.width, height: rect.height)
     }
 
     private func applyCameraSettings() {

@@ -7,6 +7,7 @@ struct SettingsSheet: View {
     @AppStorage(SettingsKey.exposureCount) private var exposureCount = 0
     @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
     @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
+    @AppStorage(SettingsKey.flipsWaistLevel) private var flipsWaistLevel = true
     @Environment(\.dismiss) private var dismiss
 
     var body: some View {
@@ -35,6 +36,12 @@ struct SettingsSheet: View {
                     Toggle("保存镜像照片", isOn: $saveMirrored)
                 } footer: {
                     Text("关闭时，保存的照片方向和真实场景一致；打开时，照片和取景屏上看到的一样，左右相反。")
+                }
+
+                Section {
+                    Toggle("腰平模式翻转 180°", isOn: $flipsWaistLevel)
+                } footer: {
+                    Text("半折时 iPhone Duo 会把界面上下颠倒，打开后自动转正。如果半折后取景屏出现在竖起来的那半屏，或者内容是倒的，就切换这个开关。")
                 }
 
                 Section {
