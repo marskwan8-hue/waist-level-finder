@@ -8,6 +8,7 @@ struct SettingsSheet: View {
     @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
     @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
     @AppStorage(SettingsKey.flipsWaistLevel) private var flipsWaistLevel = true
+    @AppStorage(SettingsKey.mirrorsViewfinder) private var mirrorsViewfinder = false
     let onDone: () -> Void
 
     var body: some View {
@@ -30,6 +31,12 @@ struct SettingsSheet: View {
                     Text("色彩")
                 } footer: {
                     Text("色调同时用在取景屏和照片上：偏冷的底色带一点自然暖意，高光压低、暗部提亮、对比和鲜艳度略降，蓝色更沉，绿色更淡。自然影调会尽量不用 Smart HDR 这类多帧合成，光影过渡更自然，但暗光下噪点会多一些。")
+                }
+
+                Section {
+                    Toggle("镜像取景（真实腰平）", isOn: $mirrorsViewfinder)
+                } footer: {
+                    Text("真正的腰平取景器没有棱镜，看到的画面左右相反：相机往左移，画面往右跑。打开可以体验原汁原味的感觉。")
                 }
 
                 Section {
@@ -62,9 +69,10 @@ struct SettingsSheet: View {
 
                 Section("怎么用") {
                     VStack(alignment: .leading, spacing: 8) {
-                        Text("1. 把 iPhone Duo 展开，再横过来半折到 90° 左右，像一台小笔记本电脑。")
-                        Text("2. 让背面有摄像头的那一半竖起来，镜头朝前；另一半平放，屏幕朝上。")
-                        Text("3. 把手机端在腰间，低头看下半屏取景。点按画面对焦，按右边的快门拍照。")
+                        Text("1. 在控制中心关闭竖排方向锁定，否则半折后画面会上下颠倒。")
+                        Text("2. 把 iPhone Duo 展开，再横过来半折到 90° 左右，像一台小笔记本电脑。")
+                        Text("3. 让背面有摄像头的那一半竖起来，镜头朝前；另一半平放，屏幕朝上。")
+                        Text("4. 把手机端在腰间，低头看下半屏取景。点按画面对焦，按右边的快门拍照。")
                     }
                     .font(.callout)
                 }

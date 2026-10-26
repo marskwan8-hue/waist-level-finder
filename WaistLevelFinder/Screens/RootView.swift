@@ -18,6 +18,7 @@ struct RootView: View {
     @AppStorage(SettingsKey.zoom) private var zoom = 2.0
     @AppStorage(SettingsKey.exposureBias) private var exposureBias = 0.0
     @AppStorage(SettingsKey.flipsWaistLevel) private var flipsWaistLevel = true
+    @AppStorage(SettingsKey.mirrorsViewfinder) private var mirrorsViewfinder = false
 
     @Environment(\.scenePhase) private var scenePhase
 
@@ -43,7 +44,8 @@ struct RootView: View {
                     isLoupeOn: isLoupeOn,
                     isBlackout: isBlackout,
                     rotationAngle: normalizedDegrees(camera.previewAngle + CGFloat(rotationCorrection)),
-                    appliesLook: appliesLook
+                    appliesLook: appliesLook,
+                    isMirrored: mirrorsViewfinder
                 )
                 .frame(width: layout.glass.width, height: layout.glass.height)
                 .position(x: layout.glass.midX, y: layout.glass.midY)
@@ -181,10 +183,15 @@ private struct PoseHint: View {
     let isBookPose: Bool
 
     var body: some View {
-        Label(
-            isBookPose ? "横过来，让摄像头那一半竖起来" : "半折到 90° 左右，进入腰平模式",
-            systemImage: isBookPose ? "rotate.right" : "laptopcomputer"
-        )
+        VStack(spacing: 2) {
+            Label(
+                isBookPose ? "横过来，让摄像头那一半竖起来" : "半折到 90° 左右，进入腰平模式",
+                systemImage: isBookPose ? "rotate.right" : "laptopcomputer"
+            )
+            // The app turns the interface itself in the waist-level pose; the lock stops it.
+            Text("请先在控制中心关闭竖排方向锁定")
+                .font(.caption2)
+        }
         .font(.footnote)
         .foregroundStyle(.secondary)
         .padding(.horizontal, 12)

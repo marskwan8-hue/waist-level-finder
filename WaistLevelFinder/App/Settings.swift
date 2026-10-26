@@ -11,6 +11,7 @@ enum SettingsKey {
     static let zoom = "zoom"
     static let exposureBias = "exposureBias"
     static let flipsWaistLevel = "flipsWaistLevel"
+    static let mirrorsViewfinder = "mirrorsViewfinder"
 }
 
 /// Exposure compensation steps. The recipe pulls exposure down to deepen shadows.

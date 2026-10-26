@@ -9,6 +9,7 @@ struct GroundGlassView: View {
     let isBlackout: Bool
     let rotationAngle: CGFloat
     let appliesLook: Bool
+    let isMirrored: Bool
 
     @State private var focusMark: FocusMark?
 
@@ -27,8 +28,8 @@ struct GroundGlassView: View {
                         .transition(.scale(scale: 1.6).combined(with: .opacity))
                 }
             }
-            // 👇 The waist-level look: no prism, so left and right are swapped.
-            .scaleEffect(x: -1, y: 1)
+            // 👇 The real waist-level look: no prism, so left and right are swapped.
+            .scaleEffect(x: isMirrored ? -1 : 1, y: 1)
             // The pop-up magnifier enlarges the centre of the screen.
             .scaleEffect(isLoupeOn ? 2.6 : 1)
 

@@ -15,16 +15,6 @@ struct HoodPanel: View {
         ZStack {
             LeatheretteBackground()
 
-            VStack(spacing: 10) {
-                Text("WAIST · LEVEL · FINDER")
-                    .font(.system(size: 13, weight: .medium, design: .serif))
-                    .tracking(5)
-                    .foregroundStyle(Color(white: 0.7))
-                Text("低头看下半屏 · 画面左右相反")
-                    .font(.footnote)
-                    .foregroundStyle(.secondary)
-            }
-
             VStack {
                 HStack(alignment: .top) {
                     if let angle {
