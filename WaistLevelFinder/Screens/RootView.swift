@@ -8,11 +8,12 @@ struct RootView: View {
     @State private var isCapturing = false
     @State private var isShowingSettings = false
     @State private var toast: String?
+    /// Counts saved photos this session, to trigger the shutter haptic.
+    @State private var shotCount = 0
 
     @AppStorage(SettingsKey.focusingScreen) private var screen = FocusingScreen.grid
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
     @AppStorage(SettingsKey.rotationCorrection) private var rotationCorrection = 0
-    @AppStorage(SettingsKey.exposureCount) private var exposureCount = 0
     @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
     @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
     @AppStorage(SettingsKey.zoom) private var zoom = 2.0
@@ -62,9 +63,6 @@ struct RootView: View {
                         .position(settings)
                 }
 
-                ExposureCounter(exposureCount: exposureCount)
-                    .position(layout.counter)
-
                 ShutterButton(isEnabled: camera.state == .running && !isCapturing, action: shoot)
                     .position(layout.shutter)
 
@@ -108,7 +106,7 @@ struct RootView: View {
             }
         }
         .background(Color(white: 0.07).ignoresSafeArea())
-        .sensoryFeedback(.impact(weight: .heavy), trigger: exposureCount)
+        .sensoryFeedback(.impact(weight: .heavy), trigger: shotCount)
         .sensoryFeedback(.selection, trigger: isLoupeOn)
         .onHingeChange { _, newContext in
             hinge = newContext.hinge
@@ -158,10 +156,7 @@ struct RootView: View {
                     prefersNaturalTone: prefersNaturalTone
                 )
                 try await PhotoLibrary.save(jpeg)
-                exposureCount += 1
-                if exposureCount % exposuresPerRoll == 0 {
-                    showToast(language.pick("一卷拍完了，换新卷继续", "That's the roll. Load a new one."))
-                }
+                shotCount += 1
             } catch {
                 showToast(error.localizedDescription)
             }

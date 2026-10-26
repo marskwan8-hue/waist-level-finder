@@ -21,7 +21,6 @@ struct FinderLayout {
     let glass: CGRect
     let tools: CGPoint
     let shutter: CGPoint
-    let counter: CGPoint
     /// The settings button, in handheld mode. In waist-level mode it's on the hood.
     let settings: CGPoint?
 
@@ -49,8 +48,7 @@ struct FinderLayout {
         self.hood = hood
         self.glass = glass
         shutter = CGPoint(x: (glass.maxX + size.width) / 2, y: deck.midY)
-        tools = CGPoint(x: hood.width * 0.36, y: hood.midY + 12)
-        counter = CGPoint(x: hood.width * 0.64, y: hood.midY + 12)
+        tools = CGPoint(x: hood.midX, y: hood.midY + 12)
         settings = nil
     }
 
@@ -64,8 +62,7 @@ struct FinderLayout {
             let rightX = (glass.maxX + size.width) / 2
             self.glass = glass
             tools = CGPoint(x: glass.minX / 2, y: glass.midY)
-            shutter = CGPoint(x: rightX, y: glass.midY + side * 0.12)
-            counter = CGPoint(x: rightX, y: glass.midY - side * 0.28)
+            shutter = CGPoint(x: rightX, y: glass.midY)
             settings = CGPoint(x: size.width - 36, y: 32)
         } else {
             let controlsHeight: CGFloat = 170
@@ -74,9 +71,8 @@ struct FinderLayout {
             let glass = CGRect(x: (size.width - side) / 2, y: top, width: side, height: side)
             let controlsY = glass.maxY + (size.height - glass.maxY) / 2
             self.glass = glass
-            tools = CGPoint(x: size.width * 0.2, y: controlsY)
-            shutter = CGPoint(x: size.width * 0.54, y: controlsY)
-            counter = CGPoint(x: size.width * 0.84, y: controlsY)
+            tools = CGPoint(x: size.width * 0.28, y: controlsY)
+            shutter = CGPoint(x: size.width * 0.72, y: controlsY)
             settings = CGPoint(x: size.width - 36, y: 32)
         }
     }

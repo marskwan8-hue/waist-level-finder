@@ -101,30 +101,3 @@ private struct ToolButton<Icon: View>: View {
         .buttonStyle(.plain)
     }
 }
-
-/// The exposure counter window of a 12-exposure film back.
-struct ExposureCounter: View {
-    let exposureCount: Int
-    @Environment(\.language) private var language
-
-    var body: some View {
-        VStack(spacing: 2) {
-            Text("\(exposureCount % exposuresPerRoll + 1)")
-                .font(.system(size: 26, weight: .semibold, design: .monospaced))
-                .foregroundStyle(.white)
-                .frame(width: 50, height: 38)
-                .background(RoundedRectangle(cornerRadius: 4).fill(.black))
-                .overlay(RoundedRectangle(cornerRadius: 4).stroke(Color(white: 0.35), lineWidth: 1))
-                .contentTransition(.numericText())
-            Text("/ \(exposuresPerRoll)")
-                .font(.caption2.monospaced())
-                .foregroundStyle(.secondary)
-        }
-        .animation(.snappy, value: exposureCount)
-        .accessibilityElement(children: .ignore)
-        .accessibilityLabel(language.pick(
-            "第 \(exposureCount % exposuresPerRoll + 1) 张，共 \(exposuresPerRoll) 张",
-            "Frame \(exposureCount % exposuresPerRoll + 1) of \(exposuresPerRoll)"
-        ))
-    }
-}

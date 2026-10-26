@@ -4,7 +4,6 @@ struct SettingsSheet: View {
     @AppStorage(SettingsKey.focusingScreen) private var screen = FocusingScreen.grid
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
     @AppStorage(SettingsKey.rotationCorrection) private var rotationCorrection = 0
-    @AppStorage(SettingsKey.exposureCount) private var exposureCount = 0
     @AppStorage(SettingsKey.appliesLook) private var appliesLook = true
     @AppStorage(SettingsKey.prefersNaturalTone) private var prefersNaturalTone = true
     @AppStorage(SettingsKey.flipsWaistLevel) private var flipsWaistLevel = true
@@ -85,12 +84,6 @@ struct SettingsSheet: View {
                         "如果取景画面或拍出来的照片方向不对，在这里校正。",
                         "If the viewfinder or your photos come out rotated, correct it here."
                     ))
-                }
-
-                Section {
-                    Button(l.pick("装新胶卷（计数归零）", "Load New Roll (Reset Counter)")) {
-                        exposureCount = 0
-                    }
                 }
 
                 Section(l.pick("怎么用", "How to Use")) {
