@@ -10,6 +10,9 @@ struct RootView: View {
     @State private var toast: String?
     /// Counts saved photos this session, to trigger the shutter haptic.
     @State private var shotCount = 0
+    /// False for a moment at launch, while the fold region arrives and the interface turns upright,
+    /// so the controls don't visibly jump into place.
+    @State private var hasSettled = false
 
     @AppStorage(SettingsKey.focusingScreen) private var screen = FocusingScreen.grid
     @AppStorage(SettingsKey.saveMirrored) private var saveMirrored = false
@@ -35,6 +38,7 @@ struct RootView: View {
             ZStack(alignment: .topLeading) {
                 if let hood = layout.hood {
                     HoodPanel(hinge: hinge) { isShowingSettings = true }
+                        .opacity(hasSettled ? 1 : 0)
                         .frame(width: hood.width, height: hood.height)
                         .position(x: hood.midX, y: hood.midY)
                         .transition(.opacity)
@@ -54,6 +58,7 @@ struct RootView: View {
 
                 ToolButtons(isLoupeOn: $isLoupeOn, screen: $screen, exposureBias: $exposureBias, zoom: $zoom)
                     .position(layout.tools)
+                    .opacity(hasSettled ? 1 : 0)
 
                 if let settings = layout.settings {
                     Button(language.pick("设置", "Settings"), systemImage: "gearshape") { isShowingSettings = true }
@@ -61,15 +66,18 @@ struct RootView: View {
                         .font(.title3)
                         .foregroundStyle(.white)
                         .position(settings)
+                        .opacity(hasSettled ? 1 : 0)
                 }
 
                 ShutterButton(isEnabled: camera.state == .running && !isCapturing, action: shoot)
                     .position(layout.shutter)
+                    .opacity(hasSettled ? 1 : 0)
 
                 if case .handheld(let isBookPose) = layout.mode, hinge != nil {
                     PoseHint(isBookPose: isBookPose)
                         .frame(maxWidth: .infinity)
                         .padding(.top, 8)
+                        .opacity(hasSettled ? 1 : 0)
                 }
 
                 if isShowingSettings {
@@ -95,7 +103,7 @@ struct RootView: View {
                         .transition(.opacity)
                 }
             }
-            .animation(.smooth, value: layout.mode)
+            .animation(hasSettled ? .smooth : nil, value: layout.mode)
             .animation(.smooth, value: isShowingSettings)
             .onChange(of: locksOrientation, initial: true) { _, locks in
                 if locks {
@@ -112,6 +120,12 @@ struct RootView: View {
             hinge = newContext.hinge
         }
         .task {
+            // Build the colour cube off the main thread before the first frame needs it.
+            Task.detached(priority: .userInitiated) { _ = HasselbladLook.cubeData }
+            Task {
+                try? await Task.sleep(for: .milliseconds(700))
+                withAnimation(.easeIn(duration: 0.25)) { hasSettled = true }
+            }
             await camera.start()
             // Ask up front rather than on the first shot, so the alert doesn't interrupt framing.
             await PhotoLibrary.requestAccess()

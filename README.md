@@ -1,4 +1,4 @@
-# 腰平取景 · Waist Level Finder
+# Waist Level Viewfinder
 
 把 iPhone Duo 变成一台中画幅腰平取景相机。
 
